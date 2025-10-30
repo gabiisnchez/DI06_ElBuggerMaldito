@@ -10,7 +10,7 @@ body {
     color: #0f0;
     overflow: hidden;
     cursor: none;
-    transition: opacity 0.1s; /* Añadido para el efecto de parpadeo */
+    transition: opacity 0.1s;
 }
 
 .cursor {
@@ -36,7 +36,6 @@ body {
     z-index: 1000;
 }
 
-/* --- ESTILOS DE PANTALLA DE INICIO --- */
 .splash-screen {
     position: fixed;
     top: 0;
@@ -90,8 +89,16 @@ body {
 .story-context p {
     margin: 5px 0;
 }
-/* --------------------------------------------- */
 
+.ascii-art {
+    color: #f00;
+    font-size: 12px;
+    line-height: 1.2;
+    text-shadow: 0 0 5px #f00;
+    white-space: pre;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0;
+}
 
 .terminal {
     padding: 20px;
@@ -123,14 +130,6 @@ body {
     50% { opacity: 0.5; }
 }
 
-/* ===== NUEVA CLASE PARA SCRIPT FALSO ===== */
-.fake-script {
-    color: #00a800; /* Un verde ligeramente diferente */
-    font-size: 12px;
-    margin: 2px 0; /* Más juntas */
-}
-/* ========================================= */
-
 .input-line {
     display: flex;
     margin-top: 20px;
@@ -151,16 +150,6 @@ body {
     flex: 1;
     caret-color: #0f0;
     cursor: none;
-}
-
-.ascii-art {
-    color: #f00;
-    font-size: 12px;
-    line-height: 1.2;
-    text-shadow: 0 0 5px #f00;
-    white-space: pre;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 0;
 }
 
 .choice-button {
@@ -199,30 +188,4 @@ body {
     0%, 100% { transform: translate(0, 0); }
     10%, 30%, 50%, 70%, 90% { transform: translate(-10px, 5px); }
     20%, 40%, 60%, 80% { transform: translate(10px, -5px); }
-}
-
-.jumpscare {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-}
-
-.jumpscare-text {
-    font-size: 80px;
-    color: #f00;
-    text-shadow: 0 0 50px #f00;
-    animation: scareZoom 0.5s;
-    text-align: center;
-}
-
-@keyframes scareZoom {
-    0% { transform: scale(0); }
-    100% { transform: scale(1); }
 }
