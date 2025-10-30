@@ -74,6 +74,24 @@ body {
     font-size: 16px !important;
     cursor: none; /* Asegurar que el cursor del sistema esté oculto incluso en el botón de inicio */
 }
+
+/* ==== MODIFICACIÓN AÑADIDA ==== */
+.story-context {
+    margin-top: 25px; /* Más espacio arriba */
+    padding: 0 10px;
+    color: #ccc;     /* Un color gris/blanco pálido */
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.6;
+    border-left: 2px solid #f00; /* Línea roja lateral para estilo */
+    padding-left: 15px;
+}
+
+.story-context p {
+    margin: 5px 0; /* Ajusta el espacio entre las líneas de la historia */
+}
+/* ==== FIN DE LA MODIFICACIÓN ==== */
+
 /* --------------------------------------------- */
 
 
