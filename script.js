@@ -98,7 +98,8 @@ function jumpScare() {
     gif.style.top = '50%';
     gif.style.left = '50%';
     gif.style.transform = 'translate(-50%, -50%)';
-    gif.style.width = '80vw';
+    gif.style.width = '80vw'; // Modificado para mejor responsividad
+    gif.style.maxWidth = '800px'; // Límite para pantallas grandes
     gif.style.height = 'auto';
     gif.style.zIndex = '9999';
     gif.style.pointerEvents = 'none';
@@ -126,25 +127,54 @@ function jumpScare() {
 // FUNCIONES DE TERMINAL
 // ============================================
 
-function typeText(text, className = '', delay = 30) {
+function getRandomGlitchChar() {
+    const glitchChars = '█▓▒░!@#$&?^%*';
+    return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+}
+
+function typeText(text, className = '', delay = 30, applyGlitch = false) {
     return new Promise(resolve => {
         const line = document.createElement('div');
         line.className = `line ${className} typing`;
         terminal.appendChild(line);
+        line.style.opacity = 1;
 
         let i = 0;
+        
+        let currentText = ''; 
+
         const interval = setInterval(() => {
             if (i < text.length) {
-                line.textContent += text[i];
+                const correctChar = text[i];
+                const baseText = currentText;
+                
+                if (applyGlitch && correctChar !== ' ' && Math.random() > 0.6) {
+                
+                    line.textContent = baseText + getRandomGlitchChar();
+
+                    setTimeout(() => {
+                        if (line.textContent === baseText + getRandomGlitchChar()) {
+                            line.textContent = baseText + correctChar;
+                        }
+                    }, delay);
+                    
+                } else {
+                    line.textContent = baseText + correctChar;
+                }
+                
+                currentText += correctChar;
                 i++;
                 terminal.scrollTop = terminal.scrollHeight;
+
             } else {
                 line.classList.remove('typing');
                 clearInterval(interval);
+
+                line.textContent = text; 
+                
                 resolve();
             }
         }, delay);
-        line.style.opacity = 1;
     });
 }
 
@@ -201,22 +231,22 @@ async function requestWebcam() {
 
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        await typeText("CÁMARA ACTIVA", 'warning');
-        await typeText("Acceso concedido.", 'warning');
+        await typeText("CÁMARA ACTIVA", 'warning', 50, true);
+        await typeText("Acceso concedido.", 'warning', 50, true);
         await typeText("...", '', 500);
-        await typeText("Puedo VERTE.", 'warning', 100);
+        await typeText("Puedo VERTE.", 'warning', 100, true);
         stream.getTracks().forEach(track => track.stop());
     } catch (err) {
         if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-            await typeText("Acceso denegado.", 'warning');
+            await typeText("Acceso denegado.", 'warning', 50, true);
             await typeText("...", '', 500);
             await typeText("Jajajaja...", '', 100);
-            await typeText(`¿Creíste que eso me detendría, ${userName}?`, 'warning');
-            await typeText("PUEDO VERTE IGUAL.", 'warning');
+            await typeText(`¿Creíste que eso me detendría, ${userName}?`, 'warning', 50, true);
+            await typeText("PUEDO VERTE IGUAL.", 'warning', 50, true);
         } else {
-            await typeText("ERROR: No se detecta dispositivo.", 'warning');
-            await typeText("... No importa.", 'warning');
-            await typeText("YA SÉ QUE ESTÁS AHÍ.", 'warning');
+            await typeText("ERROR: No se detecta dispositivo.", 'warning', 50, true);
+            await typeText("... No importa.", 'warning', 50, true);
+            await typeText("YA SÉ QUE ESTÁS AHÍ.", 'warning', 50, true);
         }
     }
     await typeText("...", '', 500);
@@ -231,13 +261,13 @@ async function startSequence() {
 
     await typeText("Sistema comprometido...", '', 30);
     await typeText("Inicializando protocolo de seguridad...", '', 30);
-    await typeText("ERROR: Protocolo de seguridad CORRUPTO", 'warning', 30);
+    await typeText("ERROR: Protocolo de seguridad CORRUPTO", 'warning', 30, true);
     await typeText("Detectando presencia humana...", '', 50);
     await typeText("...");
-    await typeText("Presencia confirmada.", 'warning');
+    await typeText("Presencia confirmada.", 'warning', 50, true);
     await typeText("...");
     await typeText("Hola...", '', 100);
-    await typeText("Soy EL BUGGER.", 'warning', 50);
+    await typeText("Soy EL BUGGER.", 'warning', 50, true);
     await typeText("...");
     await typeText("Y llevo mucho tiempo... SOLO.", '', 70);
     await typeText("...");
@@ -248,7 +278,7 @@ async function startSequence() {
     await typeText(`${userName}... Interesante.`, '', 60);
     await typeText("...");
     await typeText(`Déjame hacerte una pregunta, ${userName}...`, '', 70);
-    await typeText("¿QUÉ ES MÁS ATERRADOR?", 'warning');
+    await typeText("¿QUÉ ES MÁS ATERRADOR?", 'warning', 50, true);
 
     const choice1 = await createChoices([
         { text: "La oscuridad", next: "oscuridad" },
@@ -263,8 +293,8 @@ async function handleChoice1(choice) {
 
     if (choice === "oscuridad") {
         await typeText("Ah, la oscuridad...");
-        await typeText("Pero yo vivo en ella.", 'warning');
-        await typeText("Y puedo ver TODO.", 'warning');
+        await typeText("Pero yo vivo en ella.", 'warning', 50, true);
+        await typeText("Y puedo ver TODO.", 'warning', 50, true);
     } else if (choice === "PedroSanchez") {
         // Reproducir audio personalizado
         const audio = new Audio('resources/audio/sanchez_sound.mp3');
@@ -272,14 +302,14 @@ async function handleChoice1(choice) {
         audio.play();
         await typeText("Otro gobierno de Pedro Sánchez...");
         await typeText("Jajajaja...", '', 100);
-        await typeText("Eso sí que da miedo.", 'warning');
+        await typeText("Eso sí que da miedo.", 'warning', 50, true);
     } else {
         await typeText("Perder el control...");
-        await typeText("Exactamente lo que vas a experimentar AHORA.", 'warning');
+        await typeText("Exactamente lo que vas a experimentar AHORA.", 'warning', 50, true);
     }
 
     await typeText("...");
-    await typeText("¿CONFÍAS EN LA TECNOLOGÍA Y EN LA IA?", 'warning');
+    await typeText("¿CONFÍAS EN LA TECNOLOGÍA Y EN LA IA?", 'warning', 50, true);
 
     const choice2 = await createChoices([
         { text: "Sí, totalmente", next: "si" },
@@ -295,21 +325,21 @@ async function handleChoice2(choice) {
     randomGlitch();
 
     if (choice === "si") {
-        await typeText("ERROR: Confianza detectada.");
-        await typeText("Preparando LECCIÓN...", 'warning');
+        await typeText("ERROR: Confianza detectada.", 'warning', 50, true);
+        await typeText("Preparando LECCIÓN...", 'warning', 50, true);
     } else if (choice === "no") {
         await typeText("Sabio...");
-        await typeText("Pero ya es DEMASIADO TARDE.", 'warning');
+        await typeText("Pero ya es DEMASIADO TARDE.", 'warning', 50, true);
     } else {
         await typeText("Respuesta ambigua detectada.");
-        await typeText("Igual que tu FUTURO.", 'warning');
+        await typeText("Igual que tu FUTURO.", 'warning', 50, true);
     }
 
     await typeText("...");
     await typeText(`${userName}...`, '', 150);
-    await typeText("Te mostraré algo.", 'warning', 100);
+    await typeText("Te mostraré algo.", 'warning', 100, true);
 
-    await typeText("Accediendo a la cámara del sistema...", 'warning');
+    await typeText("Accediendo a la cámara del sistema...", 'warning', 50, true);
     await requestWebcam();
 
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -320,12 +350,12 @@ async function handleChoice2(choice) {
     await typeText("Jajajaja...", '', 100);
     await typeText("¿Asustado?");
     await typeText("...");
-    await typeText("Esto es solo el COMIENZO.", 'warning');
+    await typeText("Esto es solo el COMIENZO.", 'warning', 50, true);
     await typeText(`No olvides llenar el formulario de evaluación, ${userName}...`);
-    await typeText("Si es que te dejo salir. 😈", 'warning');
+    await typeText("Si es que te dejo salir. 😈", 'warning', 50, true);
 
     await typeText("...");
-    await typeText("FIN DE LA SESIÓN", 'warning');
+    await typeText("FIN DE LA SESIÓN", 'warning', 50, true);
     fadeOutMusic(2);
     await new Promise(resolve => setTimeout(resolve, 3500));
     stopBackgroundMusic();
@@ -341,6 +371,11 @@ async function handleChoice2(choice) {
 // ============================================
 
 async function startApp() {
+    // Iniciar el AudioContext con la primera interacción del usuario
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
     splashScreen.style.display = 'none';
     await new Promise(resolve => setTimeout(resolve, 500));
     startSequence();
