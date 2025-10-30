@@ -10,6 +10,7 @@ body {
     color: #0f0;
     overflow: hidden;
     cursor: none;
+    transition: opacity 0.1s; /* Añadido para el efecto de parpadeo */
 }
 
 .cursor {
@@ -35,7 +36,7 @@ body {
     z-index: 1000;
 }
 
-/* --- ESTILOS DE PANTALLA DE INICIO AÑADIDOS --- */
+/* --- ESTILOS DE PANTALLA DE INICIO --- */
 .splash-screen {
     position: fixed;
     top: 0;
@@ -72,26 +73,23 @@ body {
     margin-top: 30px;
     padding: 15px 30px !important; 
     font-size: 16px !important;
-    cursor: none; /* Asegurar que el cursor del sistema esté oculto incluso en el botón de inicio */
+    cursor: none;
 }
 
-/* ==== MODIFICACIÓN AÑADIDA ==== */
 .story-context {
-    margin-top: 25px; /* Más espacio arriba */
+    margin-top: 25px;
     padding: 0 10px;
-    color: #ccc;     /* Un color gris/blanco pálido */
+    color: #ccc;
     font-style: italic;
     font-size: 14px;
     line-height: 1.6;
-    border-left: 2px solid #f00; /* Línea roja lateral para estilo */
+    border-left: 2px solid #f00;
     padding-left: 15px;
 }
 
 .story-context p {
-    margin: 5px 0; /* Ajusta el espacio entre las líneas de la historia */
+    margin: 5px 0;
 }
-/* ==== FIN DE LA MODIFICACIÓN ==== */
-
 /* --------------------------------------------- */
 
 
@@ -124,6 +122,14 @@ body {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
+
+/* ===== NUEVA CLASE PARA SCRIPT FALSO ===== */
+.fake-script {
+    color: #00a800; /* Un verde ligeramente diferente */
+    font-size: 12px;
+    margin: 2px 0; /* Más juntas */
+}
+/* ========================================= */
 
 .input-line {
     display: flex;
@@ -209,10 +215,11 @@ body {
 }
 
 .jumpscare-text {
-    font-size: 100px;
+    font-size: 80px;
     color: #f00;
     text-shadow: 0 0 50px #f00;
     animation: scareZoom 0.5s;
+    text-align: center;
 }
 
 @keyframes scareZoom {

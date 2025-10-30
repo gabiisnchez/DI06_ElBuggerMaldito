@@ -6,11 +6,12 @@
     <title>SISTEMA COMPROMETIDO</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<audio id="bgMusic" src="" loop preload="auto"></audio>
 <body>
     <div class="cursor"></div>
     <div class="glitch"></div>
     <div class="jumpscare">
-        <div class="jumpscare-text">¡TE TENGO!</div>
+        <div class="jumpscare-text" id="jumpscareText">¡TE TENGO!</div>
     </div>
     
     <div class="splash-screen" id="splashScreen">
@@ -38,16 +39,7 @@
         <div class="line warning">═══════════════════════════════════════</div>
         <div class="line warning">⚠ ADVERTENCIA DEL SISTEMA ⚠</div>
         <div class="line warning">═══════════════════════════════════════</div>
-        <div class="line">Sistema comprometido...</div>
-        <div class="line">Inicializando protocolo de seguridad...</div>
-        <div class="line warning">ERROR: Protocolo de seguridad CORRUPTO</div>
-        <div class="line">Detectando presencia humana...</div>
     </div>
-
-    <audio id="staticSound" loop preload="auto">
-        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
-    </audio>
-
     <script src="script.js"></script>
 </body>
 </html>

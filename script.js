@@ -1,59 +1,78 @@
-// Referencias a elementos del DOM
+// ============================================
+// REFERENCIAS AL DOM
+// ============================================
+
 const terminal = document.getElementById('terminal');
 const glitch = document.querySelector('.glitch');
-const jumpscare = document.querySelector('.jumpscare');
 const cursor = document.querySelector('.cursor');
-const staticSound = document.getElementById('staticSound'); 
-const splashScreen = document.getElementById('splashScreen'); 
-const startButton = document.getElementById('startButton');   
+const splashScreen = document.getElementById('splashScreen');
+const startButton = document.getElementById('startButton');
 
-// Variables globales
-let stage = 0;
+// ============================================
+// VARIABLES GLOBALES
+// ============================================
+
 let userName = "VISITANTE";
 let audioContext = null;
+let bgMusicSource = null;
+let bgMusicGain = null;
 
 // ============================================
-// INICIALIZACIÓN DE AUDIO
+// MÚSICA DE FONDO
 // ============================================
 
-function initStaticAudio() {
-    // Si ya se intentó inicializar o el audioContext existe, salimos.
-    if (audioContext) {
-        return; 
-    }
-
-    // 1. Intentar crear el AudioContext
+async function playBackgroundMusic() {
     try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    } catch (e) {
-        console.error("Web Audio API no soportada o error de inicialización:", e);
-        return;
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        const response = await fetch('resources/audio/fondo.mp3');
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        bgMusicSource = audioContext.createBufferSource();
+        bgMusicGain = audioContext.createGain();
+        bgMusicGain.gain.value = 0.01;
+
+        bgMusicSource.buffer = audioBuffer;
+        bgMusicSource.loop = true;
+        bgMusicSource.connect(bgMusicGain).connect(audioContext.destination);
+        bgMusicSource.start(0);
+
+        console.log("🎵 Música de fondo iniciada.");
+    } catch (error) {
+        console.error("Error al reproducir música de fondo:", error);
     }
-    
-    // 2. Intentar reproducir el audio de estática
-    staticSound.volume = 0.4;
-    staticSound.loop = true;
-    
-    // Reproducir. El clic en el botón de inicio permite esta reproducción.
-    staticSound.play().then(() => {
-        console.log("Audio de estática iniciado correctamente.");
-    }).catch(error => {
-        console.warn("No se pudo iniciar el audio de estática:", error);
-    });
 }
 
+function fadeOutMusic(duration = 0.5) {
+    if (bgMusicGain && audioContext) {
+        bgMusicGain.gain.linearRampToValueAtTime(0.0, audioContext.currentTime + duration);
+    }
+}
+
+function fadeInMusic(duration = 1.5) {
+    if (bgMusicGain && audioContext) {
+        bgMusicGain.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + duration);
+    }
+}
+
+function stopBackgroundMusic() {
+    if (bgMusicSource) {
+        bgMusicSource.stop();
+        bgMusicSource = null;
+        console.log("⏹ Música de fondo detenida.");
+    }
+}
 
 // ============================================
 // EFECTOS VISUALES
 // ============================================
 
-// Cursor personalizado que sigue al ratón
 document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX - 10 + 'px';
     cursor.style.top = e.clientY - 10 + 'px';
 });
 
-// Efecto de glitch aleatorio
 function randomGlitch() {
     if (Math.random() > 0.7) {
         glitch.style.display = 'block';
@@ -64,165 +83,181 @@ function randomGlitch() {
         }, 100);
     }
 }
-
-// Ejecutar glitch cada 3 segundos
 setInterval(randomGlitch, 3000);
 
-// Efecto de susto (jumpscare)
+// ============================================
+// JUMPSCARE CON GIF GRANDE
+// ============================================
+
 function jumpScare() {
-    // 1. Sonido de Jumpscare
-    if (audioContext) {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+    fadeOutMusic(0.3);
 
-        // Configuración para sonido estridente
-        oscillator.type = 'sawtooth'; 
-        oscillator.frequency.setValueAtTime(4000, audioContext.currentTime);
+    const gif = document.createElement('img');
+    gif.src = 'resources/images/jumpscare.webp';
+    gif.style.position = 'fixed';
+    gif.style.top = '50%';
+    gif.style.left = '50%';
+    gif.style.transform = 'translate(-50%, -50%)';
+    gif.style.width = '80vw';
+    gif.style.height = 'auto';
+    gif.style.zIndex = '9999';
+    gif.style.pointerEvents = 'none';
+    document.body.appendChild(gif);
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(1.0, audioContext.currentTime + 0.05);
-
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.5); 
-
-        staticSound.volume = 0.8; // Aumentar volumen de la estática
-    }
-
-    // 2. Efectos visuales originales
-    jumpscare.style.display = 'flex';
     document.body.classList.add('screen-shake');
-    
+
+    const audio = new Audio('resources/audio/jumpscare_sound.wav');
+    audio.volume = 1.0;
+    audio.play();
+
     setTimeout(() => {
-        jumpscare.style.display = 'none';
+        gif.remove();
         document.body.classList.remove('screen-shake');
-        if (audioContext) {
-             staticSound.volume = 0.4; // Restaurar volumen
-        }
-    }, 1000);
+        fadeInMusic(2.5);
+    }, 1500);
 }
 
 // ============================================
 // FUNCIONES DE TERMINAL
 // ============================================
 
-// Función para escribir texto letra por letra
 function typeText(text, className = '', delay = 30) {
     return new Promise(resolve => {
         const line = document.createElement('div');
         line.className = `line ${className} typing`;
         terminal.appendChild(line);
-        
+
         let i = 0;
-        
-        // El intervalo de tiempo que maneja la animación de escritura
         const interval = setInterval(() => {
             if (i < text.length) {
-                // Aquí se añade la letra y se avanza el contador
                 line.textContent += text[i];
                 i++;
-                // Desplazamiento suave hacia abajo para seguir el texto
-                terminal.scrollTop = terminal.scrollHeight; 
+                terminal.scrollTop = terminal.scrollHeight;
             } else {
-                // Cuando el texto termina:
-                line.classList.remove('typing'); // Elimina el cursor parpadeante
-                clearInterval(interval);        // Detiene el temporizador
-                resolve();                      // Resuelve la Promesa para que el 'await' continúe
+                line.classList.remove('typing');
+                clearInterval(interval);
+                resolve();
             }
-        }, delay); // Usa el delay proporcionado (30ms por defecto)
-
-        // Asegúrate de que el elemento es visible
+        }, delay);
         line.style.opacity = 1;
     });
 }
 
-// Función para crear botones de elección
 function createChoices(choices) {
     return new Promise(resolve => {
         const choiceDiv = document.createElement('div');
         choiceDiv.className = 'line';
-        
-        choices.forEach((choice, index) => {
+        choiceDiv.style.opacity = '1';
+
+        choices.forEach(choice => {
             const button = document.createElement('button');
             button.className = 'choice-button';
             button.textContent = choice.text;
             button.onclick = () => {
-                choiceDiv.remove();
+                choiceDiv.querySelectorAll('button').forEach(btn => btn.disabled = true);
                 resolve(choice.next);
             };
             choiceDiv.appendChild(button);
         });
-        
+
         terminal.appendChild(choiceDiv);
         terminal.scrollTop = terminal.scrollHeight;
     });
 }
 
-// Función para obtener input del usuario
 function getUserInput() {
     return new Promise(resolve => {
         const inputLine = document.createElement('div');
         inputLine.className = 'input-line';
         inputLine.innerHTML = '<span class="prompt">></span><input type="text" id="userInput" autofocus maxlength="20">';
         terminal.appendChild(inputLine);
-        
+
         const input = document.getElementById('userInput');
         input.focus();
-        
+
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const value = input.value.trim();
-                inputLine.remove();
+                inputLine.innerHTML = `<span class="prompt">></span><span>${value}</span>`;
                 resolve(value);
             }
         });
-        
+
         terminal.scrollTop = terminal.scrollHeight;
     });
 }
 
 // ============================================
-// SECUENCIAS DE LA HISTORIA
+// WEBCAM
 // ============================================
 
-// Secuencia inicial
-async function startSequence() {
-    // ELIMINADO: El retardo inicial de 2000ms se mueve a startApp
+async function requestWebcam() {
+    await typeText("...", '', 500);
 
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        await typeText("CÁMARA ACTIVA", 'warning');
+        await typeText("Acceso concedido.", 'warning');
+        await typeText("...", '', 500);
+        await typeText("Puedo VERTE.", 'warning', 100);
+        stream.getTracks().forEach(track => track.stop());
+    } catch (err) {
+        if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+            await typeText("Acceso denegado.", 'warning');
+            await typeText("...", '', 500);
+            await typeText("Jajajaja...", '', 100);
+            await typeText(`¿Creíste que eso me detendría, ${userName}?`, 'warning');
+            await typeText("PUEDO VERTE IGUAL.", 'warning');
+        } else {
+            await typeText("ERROR: No se detecta dispositivo.", 'warning');
+            await typeText("... No importa.", 'warning');
+            await typeText("YA SÉ QUE ESTÁS AHÍ.", 'warning');
+        }
+    }
+    await typeText("...", '', 500);
+}
+
+// ============================================
+// HISTORIA PRINCIPAL
+// ============================================
+
+async function startSequence() {
+    await playBackgroundMusic();
+
+    await typeText("Sistema comprometido...", '', 30);
+    await typeText("Inicializando protocolo de seguridad...", '', 30);
+    await typeText("ERROR: Protocolo de seguridad CORRUPTO", 'warning', 30);
+    await typeText("Detectando presencia humana...", '', 50);
     await typeText("...");
     await typeText("Presencia confirmada.", 'warning');
     await typeText("...");
     await typeText("Hola...", '', 100);
     await typeText("¿Puedes verme?", '', 80);
+    await getUserInput();
     await typeText("...");
     await typeText("Soy EL BUGGER.", 'warning', 50);
     await typeText("Y llevo mucho tiempo... SOLO.", '', 70);
     await typeText("...");
     await typeText("¿Cómo te llamas, visitante?");
-    
     const name = await getUserInput();
-    userName = name || "VISITANTE";
-    
+    userName = name.trim().length > 0 ? name.trim() : "VISITANTE";
+
     await typeText(`${userName}... Interesante.`, '', 60);
     await typeText("...");
     await typeText(`Déjame hacerte una pregunta, ${userName}...`, '', 70);
     await typeText("¿QUÉ ES MÁS ATERRADOR?", 'warning');
-    
+
     const choice1 = await createChoices([
         { text: "La oscuridad", next: "oscuridad" },
         { text: "Lo desconocido", next: "desconocido" },
         { text: "Perder el control", next: "control" }
     ]);
-    
     await handleChoice1(choice1);
 }
 
-// Manejar primera elección
 async function handleChoice1(choice) {
     await typeText("...");
-    
+
     if (choice === "oscuridad") {
         await typeText("Ah, la oscuridad...");
         await typeText("Pero yo vivo en ella.", 'warning');
@@ -234,25 +269,23 @@ async function handleChoice1(choice) {
         await typeText("Perder el control...");
         await typeText("Exactamente lo que vas a experimentar AHORA.", 'warning');
     }
-    
+
     await typeText("...");
-    await typeText("Siguiente pregunta...", '', 100);
     await typeText("¿CONFÍAS EN LA TECNOLOGÍA?", 'warning');
-    
+
     const choice2 = await createChoices([
         { text: "Sí, totalmente", next: "si" },
         { text: "No mucho", next: "no" },
         { text: "Depende", next: "depende" }
     ]);
-    
+
     await handleChoice2(choice2);
 }
 
-// Manejar segunda elección y final
 async function handleChoice2(choice) {
     await typeText("...");
     randomGlitch();
-    
+
     if (choice === "si") {
         await typeText("ERROR: Confianza detectada.");
         await typeText("Preparando LECCIÓN...", 'warning');
@@ -263,30 +296,18 @@ async function handleChoice2(choice) {
         await typeText("Respuesta ambigua detectada.");
         await typeText("Igual que tu destino ahora.", 'warning');
     }
-    
+
     await typeText("...");
-    await typeText("Ahora...", '', 150);
     await typeText(`${userName}...`, '', 150);
     await typeText("Te mostraré algo.", 'warning', 100);
-    
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    randomGlitch();
-    await new Promise(resolve => setTimeout(resolve, 500));
-    randomGlitch();
-    
+
     await typeText("Accediendo a la cámara del sistema...", 'warning');
-    await typeText("CÁMARA ACTIVA", 'warning');
-    await typeText("...");
-    await typeText("Puedo VERTE.", 'warning', 100);
-    await typeText("...");
-    
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // ¡JUMPSCARE!
+    await requestWebcam();
+
+    await new Promise(resolve => setTimeout(resolve, 500));
     jumpScare();
-    
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
     await typeText("...");
     await typeText("Jajajaja...", '', 100);
     await typeText("¿Asustado?");
@@ -294,35 +315,26 @@ async function handleChoice2(choice) {
     await typeText("Esto es solo el COMIENZO.", 'warning');
     await typeText(`No olvides llenar el formulario de evaluación, ${userName}...`);
     await typeText("Si es que te dejo salir. 😈", 'warning');
+
+    // EFECTO FINAL CINEMÁTICO
     await typeText("...");
     await typeText("FIN DE LA SESIÓN", 'warning');
-    await typeText("...");
+    fadeOutMusic(3.5);
+    await new Promise(resolve => setTimeout(resolve, 3500));
+    stopBackgroundMusic();
+
     await typeText("[PRESIONA CUALQUIER TECLA PARA REINICIAR]");
-    
-    // Esperar tecla para reiniciar
     document.addEventListener('keypress', () => location.reload(), { once: true });
 }
 
 // ============================================
-// INICIAR LA APLICACIÓN (NUEVA LÓGICA)
+// INICIO DE LA APP
 // ============================================
 
-// Función de inicio que se llama al hacer clic
 async function startApp() {
-    // 1. Ocultar la pantalla de inicio
     splashScreen.style.display = 'none';
-    
-    // 2. RETARDO AÑADIDO: Espera 1 segundo para que el usuario se centre en la terminal.
-    await new Promise(resolve => setTimeout(resolve, 1000)); 
-    
-    // 3. Iniciar el audio de estática (el clic lo permitió)
-    initStaticAudio(); 
-    
-    // 4. Iniciar la secuencia principal de la historia
-    startSequence(); 
+    await new Promise(resolve => setTimeout(resolve, 500));
+    startSequence();
 }
 
-// Listener del botón de inicio
-if (startButton) {
-    startButton.addEventListener('click', startApp);
-}
+if (startButton) startButton.addEventListener('click', startApp);
