@@ -25,13 +25,13 @@ async function playBackgroundMusic() {
     try {
         if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        const response = await fetch('resources/audio/fondo.mp3');
+        const response = await fetch('resources/audio/fondo.wav');
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
         bgMusicSource = audioContext.createBufferSource();
         bgMusicGain = audioContext.createGain();
-        bgMusicGain.gain.value = 0.01;
+        bgMusicGain.gain.value = 0.8;
 
         bgMusicSource.buffer = audioBuffer;
         bgMusicSource.loop = true;
@@ -266,6 +266,10 @@ async function handleChoice1(choice) {
         await typeText("Pero yo vivo en ella.", 'warning');
         await typeText("Y puedo ver TODO.", 'warning');
     } else if (choice === "PedroSanchez") {
+        // Reproducir audio personalizado
+        const audio = new Audio('resources/audio/sanchez_sound.mp3');
+        audio.volume = 1.0;
+        audio.play();
         await typeText("Otro gobierno de Pedro Sánchez...");
         await typeText("Jajajaja...", '', 100);
         await typeText("Eso sí que da miedo.", 'warning');
