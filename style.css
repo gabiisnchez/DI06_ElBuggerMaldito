@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+    overflow: hidden;
+    cursor: none;
+}
+
+.cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f00;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transition: 0.1s;
+    box-shadow: 0 0 10px #f00;
+}
+
+.glitch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+}
+
+/* --- ESTILOS DE PANTALLA DE INICIO AÑADIDOS --- */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 10000; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    cursor: none; 
+}
+
+.splash-content {
+    padding: 40px;
+    border: 2px solid #f00;
+    box-shadow: 0 0 20px #f00;
+}
+
+.splash-screen h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.splash-screen p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.start-button {
+    margin-top: 30px;
+    padding: 15px 30px !important; 
+    font-size: 16px !important;
+    cursor: none; /* Asegurar que el cursor del sistema esté oculto incluso en el botón de inicio */
+}
+/* --------------------------------------------- */
+
+
+.terminal {
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.line {
+    margin: 10px 0;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.warning {
+    color: #ff0000;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff0000;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.input-line {
+    display: flex;
+    margin-top: 20px;
+}
+
+.prompt {
+    color: #f00;
+    margin-right: 10px;
+}
+
+#userInput {
+    background: transparent;
+    border: none;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    outline: none;
+    flex: 1;
+    caret-color: #0f0;
+    cursor: none;
+}
+
+.ascii-art {
+    color: #f00;
+    font-size: 12px;
+    line-height: 1.2;
+    text-shadow: 0 0 5px #f00;
+    white-space: pre;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0;
+}
+
+.choice-button {
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    cursor: none;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.choice-button:hover {
+    background: #0f0;
+    color: #000;
+    box-shadow: 0 0 20px #0f0;
+}
+
+.typing {
+    border-right: 2px solid #0f0;
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: #0f0; }
+}
+
+.screen-shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translate(0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate(-10px, 5px); }
+    20%, 40%, 60%, 80% { transform: translate(10px, -5px); }
+}
+
+.jumpscare {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.jumpscare-text {
+    font-size: 100px;
+    color: #f00;
+    text-shadow: 0 0 50px #f00;
+    animation: scareZoom 0.5s;
+}
+
+@keyframes scareZoom {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}

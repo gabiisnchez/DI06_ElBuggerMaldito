@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA COMPROMETIDO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="glitch"></div>
+    <div class="jumpscare">
+        <div class="jumpscare-text">¡TE TENGO!</div>
+    </div>
+    
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <h1 class="warning">SISTEMA COMPROMETIDO</h1>
+            <p>Advertencia: Este programa contiene contenido sensible y visualmente perturbador.</p>
+            <p>Asegúrese de que el volumen esté activado.</p>
+            <button id="startButton" class="choice-button start-button">INICIAR SESIÓN</button>
+        </div>
+    </div>
+    
+    <div class="terminal" id="terminal">
+        <div class="line ascii-art">
+▄▄▄▄· ▄• ▄▌ ▄▄ • ▄▄ • ▄▄▄ .▄▄▄      ▪   ▄▄▄·
+▐█ ▀█▪█▪██▌▐█ ▀ ▪▐█ ▀ ▪▀▄.▀·▀▄ █·    ██ ▐█ ▀█ 
+▐█▀▀█▄█▌▐█▌▄█ ▀█▄▄█ ▀█▄▐▀▀▪▄▐▀▀▄     ▐█·▄█▀▀█ 
+██▄▪▐█▐█▄█▌▐█▄▪▐█▐█▄▪▐█▐█▄▄▌▐█•█▌    ▐█▌▐█ ▪▐▌
+·▀▀▀▀  ▀▀▀ ·▀▀▀▀ ·▀▀▀▀  ▀▀▀ .▀  ▀    ▀▀▀ ▀  ▀ 
+        </div>
+        <div class="line warning">═══════════════════════════════════════</div>
+        <div class="line warning">⚠ ADVERTENCIA DEL SISTEMA ⚠</div>
+        <div class="line warning">═══════════════════════════════════════</div>
+        <div class="line">Sistema comprometido...</div>
+        <div class="line">Inicializando protocolo de seguridad...</div>
+        <div class="line warning">ERROR: Protocolo de seguridad CORRUPTO</div>
+        <div class="line">Detectando presencia humana...</div>
+    </div>
+
+    <audio id="staticSound" loop preload="auto">
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
