@@ -110,11 +110,16 @@ function jumpScare() {
     audio.volume = 1.0;
     audio.play();
 
+    const duration = 1500;
+
     setTimeout(() => {
+        audio.pause();
+        audio.currentTime = 0;
         gif.remove();
         document.body.classList.remove('screen-shake');
+
         fadeInMusic(2.5);
-    }, 1500);
+    }, duration);
 }
 
 // ============================================
@@ -232,10 +237,8 @@ async function startSequence() {
     await typeText("Presencia confirmada.", 'warning');
     await typeText("...");
     await typeText("Hola...", '', 100);
-    await typeText("¿Puedes verme?", '', 80);
-    await getUserInput();
-    await typeText("...");
     await typeText("Soy EL BUGGER.", 'warning', 50);
+    await typeText("...");
     await typeText("Y llevo mucho tiempo... SOLO.", '', 70);
     await typeText("...");
     await typeText("¿Cómo te llamas, visitante?");
@@ -249,7 +252,7 @@ async function startSequence() {
 
     const choice1 = await createChoices([
         { text: "La oscuridad", next: "oscuridad" },
-        { text: "Lo desconocido", next: "desconocido" },
+        { text: "Otro gobierno de Pedro Sánchez", next: "PedroSanchez" },
         { text: "Perder el control", next: "control" }
     ]);
     await handleChoice1(choice1);
@@ -262,16 +265,17 @@ async function handleChoice1(choice) {
         await typeText("Ah, la oscuridad...");
         await typeText("Pero yo vivo en ella.", 'warning');
         await typeText("Y puedo ver TODO.", 'warning');
-    } else if (choice === "desconocido") {
-        await typeText("Lo desconocido...");
-        await typeText("Como lo que estoy a punto de mostrarte.", 'warning');
+    } else if (choice === "PedroSanchez") {
+        await typeText("Otro gobierno de Pedro Sánchez...");
+        await typeText("Jajajaja...", '', 100);
+        await typeText("Eso sí que da miedo.", 'warning');
     } else {
         await typeText("Perder el control...");
         await typeText("Exactamente lo que vas a experimentar AHORA.", 'warning');
     }
 
     await typeText("...");
-    await typeText("¿CONFÍAS EN LA TECNOLOGÍA?", 'warning');
+    await typeText("¿CONFÍAS EN LA TECNOLOGÍA Y EN LA IA?", 'warning');
 
     const choice2 = await createChoices([
         { text: "Sí, totalmente", next: "si" },
@@ -294,7 +298,7 @@ async function handleChoice2(choice) {
         await typeText("Pero ya es DEMASIADO TARDE.", 'warning');
     } else {
         await typeText("Respuesta ambigua detectada.");
-        await typeText("Igual que tu destino ahora.", 'warning');
+        await typeText("Igual que tu FUTURO.", 'warning');
     }
 
     await typeText("...");
@@ -316,12 +320,13 @@ async function handleChoice2(choice) {
     await typeText(`No olvides llenar el formulario de evaluación, ${userName}...`);
     await typeText("Si es que te dejo salir. 😈", 'warning');
 
-    // EFECTO FINAL CINEMÁTICO
     await typeText("...");
     await typeText("FIN DE LA SESIÓN", 'warning');
-    fadeOutMusic(3.5);
+    fadeOutMusic(2);
     await new Promise(resolve => setTimeout(resolve, 3500));
     stopBackgroundMusic();
+
+    window.open('https://forms.gle/tNe6mkdfjVJGu1Cs9', '_blank');
 
     await typeText("[PRESIONA CUALQUIER TECLA PARA REINICIAR]");
     document.addEventListener('keypress', () => location.reload(), { once: true });
