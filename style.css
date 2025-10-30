@@ -188,3 +188,10 @@ body {
     10%, 30%, 50%, 70%, 90% { transform: translate(-10px, 5px); }
     20%, 40%, 60%, 80% { transform: translate(10px, -5px); }
 }
+
+.cursor.glitching {
+    transform: scale(2.5) rotate(75deg);
+    border-color: #fff;
+    background: #f00;
+    box-shadow: 0 0 20px #fff;
+}

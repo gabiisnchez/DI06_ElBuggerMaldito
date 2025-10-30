@@ -77,9 +77,15 @@ function randomGlitch() {
     if (Math.random() > 0.7) {
         glitch.style.display = 'block';
         document.body.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+
+        cursor.classList.add('glitching');
+
         setTimeout(() => {
             glitch.style.display = 'none';
             document.body.style.filter = 'none';
+
+            cursor.classList.remove('glitching');
+
         }, 100);
     }
 }
