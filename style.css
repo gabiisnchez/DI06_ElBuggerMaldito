@@ -59,12 +59,12 @@ body {
 }
 
 .splash-screen h1 {
-    font-size: 30px;
+    font-size: 40px;
     margin-bottom: 20px;
 }
 
 .splash-screen p {
-    margin: 10px 0;
+    margin: 20px 0;
     font-size: 14px;
 }
 
@@ -80,9 +80,8 @@ body {
     padding: 0 10px;
     color: #ccc;
     font-style: italic;
-    font-size: 14px;
+    font-size: 20px;
     line-height: 1.6;
-    border-left: 2px solid #f00;
     padding-left: 15px;
 }
 
@@ -92,7 +91,7 @@ body {
 
 .ascii-art {
     color: #f00;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.2;
     text-shadow: 0 0 5px #f00;
     white-space: pre;
